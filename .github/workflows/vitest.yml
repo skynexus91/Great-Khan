@@ -1,19 +1,21 @@
-name: KHAN Vitest randomized tests
+name: KHAN automated tests
 on:
   push:
     branches: [main]
   pull_request:
   workflow_dispatch:
 jobs:
-  vitest:
+  tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Install test dependencies
-        run: npm install --no-save --package-lock=false vitest@^3.2.0 typescript@^5.8.0
-      - name: Run Vitest
-        run: npx vitest run src/domain/revenue.test.ts --reporter=verbose
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Run 100,000 randomized Vitest scenarios
+        run: npm test
