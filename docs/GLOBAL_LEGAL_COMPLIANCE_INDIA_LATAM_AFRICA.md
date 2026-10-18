@@ -46,15 +46,14 @@ Every entry is **UNVERIFIED / LOCAL COUNSEL REQUIRED**. Includes North Africa an
 ### North Africa (6)
 Algeria; Egypt; Libya; Mauritania; Morocco; Tunisia.
 
-### West Africa (16)
-Benin; Burkina Faso; Cabo Verde; Côte d’Ivoire; The Gambia; Ghana; Guinea; Guinea-Bissau; Liberia; Mali; Niger; Nigeria; Senegal; Sierra Leone; Togo; **[regional accounting correction: West Africa has 15 countries in the UN M49 grouping; list above contains 15, not 16]**.
+### West Africa (15)
+Benin; Burkina Faso; Cabo Verde; Côte d’Ivoire; The Gambia; Ghana; Guinea; Guinea-Bissau; Liberia; Mali; Niger; Nigeria; Senegal; Sierra Leone; Togo;
 
 ### Central Africa (9)
 Angola; Cameroon; Central African Republic; Chad; Republic of the Congo; Democratic Republic of the Congo; Equatorial Guinea; Gabon; São Tomé and Príncipe.
 
-### East Africa (18)
+### East Africa (19)
 Burundi; Comoros; Djibouti; Eritrea; Ethiopia; Kenya; Madagascar; Malawi; Mauritius; Mozambique; Rwanda; Seychelles; Somalia; South Sudan; Sudan; Tanzania; Uganda; Zambia; Zimbabwe.
-**[Regional accounting correction: the list above contains 19, not 18.]**
 
 ### Southern Africa (5)
 Botswana; Eswatini; Lesotho; Namibia; South Africa.
