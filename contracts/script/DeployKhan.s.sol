@@ -15,7 +15,11 @@ contract DeployKhan {
         address holder = vm.envAddress("KHAN_INITIAL_HOLDER");
         require(holder != address(0), "zero holder");
         vm.startBroadcast();
-        token = new KhanToken(holder);
+        address governance = vm.envAddress("KHAN_GOVERNANCE_MULTISIG");
+        address guardian = vm.envAddress("KHAN_GUARDIAN");
+        address custody = vm.envAddress("KHAN_CUSTODY");
+        require(governance != address(0) && guardian != address(0) && custody != address(0), "zero admin");
+        token = new KhanToken(holder, governance, guardian, custody);
         vm.stopBroadcast();
     }
 }
