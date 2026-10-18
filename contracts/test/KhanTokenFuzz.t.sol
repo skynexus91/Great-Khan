@@ -26,6 +26,9 @@ contract KhanTokenFuzzTest {
     }
 
     function testZeroInitialHolderReverts() public {
-        try new KhanToken(address(0), 100) { revert("expected revert"); } catch {}
+        bool reverted;
+        try new KhanToken(address(0), 100) { }
+        catch { reverted = true; }
+        require(reverted, "expected zero-holder revert");
     }
 }
