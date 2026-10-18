@@ -8,7 +8,7 @@ contract KhanTokenTest {
     address internal constant BOB = address(0xB0B);
     uint256 internal constant SUPPLY = 1_000_000_000 ether;
 
-    function setUp() public { token = new KhanToken(address(this)); }
+    function setUp() public { token = new KhanToken(address(this), address(this), address(this), address(0xCA57)); }
 
     function testMetadataAndExactSupply() public {
         require(keccak256(bytes(token.name())) == keccak256(bytes("The Great Khan")));
@@ -50,7 +50,7 @@ contract KhanTokenTest {
     }
     function testRejectZeroHolder() public {
         bool reverted;
-        try new KhanToken(address(0)) returns (KhanToken) {} catch (bytes memory reason) {
+        try new KhanToken(address(0), address(this), address(this), address(0xCA57)) returns (KhanToken) {} catch (bytes memory reason) {
             require(_selector(reason) == KhanToken.ZeroAddress.selector); reverted = true;
         }
         require(reverted, "unexpected success");
