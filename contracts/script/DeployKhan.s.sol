@@ -16,6 +16,7 @@ contract DeployKhan {
     VmDeploy private constant vm = VmDeploy(address(uint160(uint256(keccak256("hevm cheat code")))));
 
     function run() external returns (KhanToken token) {
+        require(block.chainid == 31337 || block.chainid == 11155111, "only Anvil or Sepolia");
         address holder = vm.envAddress("KHAN_INITIAL_HOLDER");
         uint256 supply = vm.envUint("KHAN_INITIAL_SUPPLY_WEI");
         require(holder != address(0), "zero holder");
