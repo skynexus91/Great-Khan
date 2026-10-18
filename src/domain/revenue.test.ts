@@ -29,6 +29,21 @@ describe("KHAN three-pillar randomized allocation", () => {
     }
     expect(seen.size).toBe(100_000);
   });
+
+  it("preserves exact sums at JavaScript safe-integer limits", () => {
+    for (const amount of [0, 1, 2, 99, 100, 101, Number.MAX_SAFE_INTEGER - 1, Number.MAX_SAFE_INTEGER]) {
+      for (const shares of [[40, 30, 30], [33, 33, 34], [100, 0, 0], [0, 0, 100]]) {
+        const result = distributeRevenue(amount, shares);
+        const values = [result.commons, result.people, result.businesses];
+        expect(values.every(Number.isSafeInteger)).toBe(true);
+        expect(values.reduce((sum, value) => sum + BigInt(value), 0n)).toBe(BigInt(amount));
+        values.forEach((value, index) => {
+          const delta = BigInt(value) * 100n - BigInt(amount) * BigInt(shares[index]);
+          expect(delta >= -100n && delta <= 100n).toBe(true);
+        });
+      }
+    }
+  });
   it("rejects invalid values and weights", () => {
     for (const amount of [-1, NaN, Infinity, 1.5, Number.MAX_SAFE_INTEGER + 1]) {
       expect(() => distributeRevenue(amount)).toThrow();
