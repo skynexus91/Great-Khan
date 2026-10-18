@@ -1,11 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import "forge-std/Script.sol";
 import "../src/KhanToken.sol";
 
-/// @notice TESTNET ONLY. No real funds or production deployment.
-contract DeployKhan is Script {
+/// @notice Foundry deployment script without external forge-std dependency.
+/// @dev TESTNET ONLY. Not a production launch or authorization.
+interface VmDeploy {
+    function envAddress(string calldata key) external returns (address);
+    function envUint(string calldata key) external returns (uint256);
+    function startBroadcast() external;
+    function stopBroadcast() external;
+}
+
+contract DeployKhan {
+    VmDeploy private constant vm = VmDeploy(address(uint160(uint256(keccak256("hevm cheat code")))));
+
     function run() external returns (KhanToken token) {
         address holder = vm.envAddress("KHAN_INITIAL_HOLDER");
         uint256 supply = vm.envUint("KHAN_INITIAL_SUPPLY_WEI");
