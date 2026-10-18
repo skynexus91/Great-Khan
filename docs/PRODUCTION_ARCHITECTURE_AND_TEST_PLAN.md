@@ -1,43 +1,37 @@
-# KHAN production-oriented design and Sepolia release gates
+# KHAN architecture, security and test plan (English)
 
-Status: DESIGN / EXPERIMENTAL. Not audited; not deployed; no financial services are offered.
+**Status: Experimental Anvil/Sepolia prototype. Not audited, not deployed.** The owner-approved governance design supersedes the original fixed-supply, no-admin proposal.
 
-## Immutable core
-- Name: The Great Khan; symbol: KHAN; decimals: 18.
-- Exactly 1,000,000,000 KHAN minted once to an explicitly confirmed recipient.
-- No post-deployment minting, owner override, confiscation, blacklist, pausing, or hidden transfer fees.
-- ERC-20 implementation currently self-contained for dependency-free prototype testing. **Before production, evaluate replacing it with a pinned, reviewed OpenZeppelin ERC20 implementation**; run compatibility tests before adopting any change.
-- Approvals in this prototype require setting an existing nonzero allowance to zero before setting a different nonzero amount. This mitigates a known race but is stricter than common ERC-20 interfaces; document integration impact and re-evaluate against OpenZeppelin patterns.
+## Owner-approved token parameters
+- Name: The Great Khan; symbol: KHAN; 18 decimals.
+- Initial issuance: **1,000,000,000 KHAN**.
+- Immutable lifetime cap: **5,000,000,000 KHAN**.
+- Mint, freeze, seize and pause are intentionally supported administrative powers. They must be disclosed to holders.
+- Mint/seizure: governance-only, token-enforced 48-hour queue delay.
+- Guardian: 24-hour per-action emergency freeze/pause; governance: seven-day per-action freeze/pause.
+- 3-of-5 bespoke multisig controls governance; signer rotation invalidates pending proposals.
+- Seized KHAN are transferred into `KhanSeizureEscrow`, with case recording, source dispute and seven-day delayed release. Independent arbitration is not implemented.
 
-## Modular protocol architecture (NOT YET IMPLEMENTED)
-1. Token: minimal non-upgradeable ERC-20; user balances independent of protocol treasury.
-2. Treasury: segregated custody, multisignature approvals, onchain accounting, time-delayed governance actions, and emergency procedures.
-3. Revenue allocator: 40% Commons / 30% People / 30% Businesses, calculated ONLY on net distributable protocol revenue; never user balances, customer deposits, or reserves. Integer arithmetic with explicit remainder rules and audit logs.
-4. Governance: least privilege, timelocks, transparent proposals, separation of roles, revocation and recovery paths. Never allow governance to mint or seize KHAN.
-5. Payments: escrow and settlement as separate audited modules; replay protection, idempotency, dispute/refund paths, and integration testing. No claim of fiat stability or guaranteed exchange rates.
-6. Mobile UX: accessible low-bandwidth interface, wallet security, transaction previews, clear fees, no custody of recovery phrases.
-7. Operational/legal: jurisdiction-specific payment/crypto compliance, sanctions screening where applicable, consumer protection, privacy, incident response, liquidity and off-ramp assessment.
+## Architecture
+1. **Token:** custom ERC-20 with cap and administrative powers; evaluate OpenZeppelin integration and compatibility before production.
+2. **Governance:** five independent signer wallets and three onchain approvals. No single-key token mint/seize if governance address is configured correctly.
+3. **Emergency:** separate guardian may freeze/pause immediately but cannot mint or seize. Renewals can prolong freezes beyond 24 hours cumulatively.
+4. **Escrow:** custody accounting and delayed releases; a dispute suspends release until governance resolution.
+5. **Revenue allocator:** proposed 40% Commons / 30% People / 30% Businesses, only for net distributable protocol revenue; not deployed onchain.
+6. **Payments/mobile:** not yet production implemented.
+7. **Legal/compliance:** consumer protection, dispute resolution, privacy, financial regulation and applicable sanctions analysis before any real-value use.
 
-## Required test plan
-- Exact token metadata, supply, constructor zero-address rejection.
-- Transfers: zero, full balance, insufficient balance, zero address, conservation of total balances.
-- Allowances: reset-to-zero, transferFrom, insufficient allowance, infinite allowance, race/integration behavior.
-- Fuzz and invariant tests: sum of balances equals totalSupply across randomized transfers and approvals.
-- Gas benchmarks and limits; deterministic reproducible Foundry tests in CI.
-- Treasury/allocator tests: zero revenue, rounding, overflow boundaries, conservation, unauthorized withdrawals, multisig and timelock.
-- Payments: duplicate execution, reentrancy, refund/dispute flows, malicious contracts, failure/retry behavior.
-- Static analysis, dependency pinning, threat model, independent security review, and post-deploy verification.
+## Testing and security gates
+- ERC-20 transfers, approvals, invalid recipients and allowance boundaries.
+- Mint supply cap, mint queue timelock, replay resistance and permissions.
+- Multisig 3-of-5 threshold, revocation, rotation, failure rollback.
+- Guardian expiry, freeze/pause enforcement and renewal abuse.
+- Escrow case recording, dispute, delayed release, unauthorized actions and reentrancy.
+- Additional invariant/fuzz testing, static analysis, manual threat modeling, independent audit, deployment rehearsal and source verification.
+- Do not treat passing GitHub Actions as an audit.
 
-## Deployment gates
-1. Record a green Foundry CI run and review all test logs.
-2. Dry-run Anvil and Sepolia simulation, estimate gas against test ETH balance.
-3. Independently verify network chain ID 11155111, bytecode, recipient and supply.
-4. Require fresh explicit owner approval of transaction details and deployer account.
-5. Publish verified contract address and transaction hash only after successful deployment.
-6. No Ethereum mainnet deployment or fundraising from this plan.
+## Deployment constraints
+Only Anvil chain 31337 or Ethereum Sepolia chain 11155111; **no broadcast without separate user authorization**. Prepare five distinct public signer addresses, governance multisig, escrow, guardian and initial holder. The existing token-only script requires prior multisig and escrow setup. Never request or store private keys in GitHub/chat.
 
-## Test recipient
-Public address supplied for Sepolia testing:
-`0x480F2b9E76098882d4245d36788db656a6cB585a`
-
-**Security**: Never commit or send private keys, seed phrases, or wallet recovery credentials. Previously disclosed keys must be considered compromised.
+## Known blockers for production
+Escrow has no independent arbitration; guardian can renew restrictions; no epoch mint cap; multisig lacks lost-quorum recovery; bespoke contracts have no external audit. See `docs/SECURITY_REVIEW_PRELIMINARY.md` and `docs/EMERGENCY_AND_ESCROW.md`.
