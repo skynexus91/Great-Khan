@@ -13,6 +13,10 @@ Open-source experimental economic simulation and Solidity token research project
 - `docs/SECURITY_REVIEW_PRELIMINARY.md`: preliminary security review; not an independent audit.
 - `docs/TRI_PILLAR_ECONOMY.md`: economic allocation charter.
 
+## Country research and long-form plan
+- [Country economic research](docs/COUNTRY_ECONOMIC_RESEARCH.md): country-by-country inflation history, economic context, original sources, limitations and research hypotheses.
+- **The Great Khan Business Plan 2026–2031**: existing 102-page PDF (100 planning worksheets). The PDF is a separate conversation artifact and is **not yet stored as a binary in this GitHub repository**. It must not be described as a peer-reviewed economic study.
+
 ## Economic simulation
 Proposed **40% Commons / 30% People / 30% Businesses** applies only to **net distributable protocol revenue**, not user balances, seized funds or the KHAN token supply. This distribution is an economic simulation and is not an onchain token distribution mechanism.
 
