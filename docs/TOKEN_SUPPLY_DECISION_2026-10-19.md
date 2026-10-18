@@ -1,0 +1,18 @@
+# KHAN tokenomics decision log — 2026-10-19
+
+## Confirmed by project owner
+- **Total initial token supply: 1,000,000,000 units (one billion).**
+- Supply remains **fixed** in the prototype: no external mint function.
+- Decimals: 18; constructor parameter `initialSupply` is in base units, therefore **1000000000000000000000000000** for one billion tokens.
+- **The spoken term “CATHY” requires clarification.** Do not rename KHAN, change symbol, or assume a wallet address based on that term.
+
+## Pending user inputs before public Sepolia deployment
+1. Clarify whether “CATHY” refers to the token name/symbol, a wallet name, or something else.
+2. Supply an EVM address (`0x` plus 40 hexadecimal characters) to receive test tokens. **Never share a private key or seed phrase.**
+3. Confirm the specific Sepolia deployment transaction after tests pass; use faucet ETH only.
+
+## Release gates
+- Local `forge test -vv` and GitHub Actions green, with recorded run link.
+- Contract deployment dry-run on Anvil and Sepolia simulation.
+- Explicit owner confirmation of token name/symbol, holder, supply and chain.
+- No mainnet launch, commercial offer, fundraising, or statement of regulatory approval.
