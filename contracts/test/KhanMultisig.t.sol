@@ -126,7 +126,7 @@ contract KhanMultisigTest {
         require(reverted, "stale proposal survived");
     }
 
-    function testFailedTargetCallDoesNotConsumeTransaction() public {
+    function testTargetRevertDoesNotConsumeTransaction() public {
         uint256 id = _proposal(address(token), abi.encodeCall(KhanToken.executeMint, (bytes32(uint256(1)), OUTSIDER, 1)));
         _approve(id);
         vm.prank(S4);
