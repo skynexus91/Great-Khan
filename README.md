@@ -1,21 +1,29 @@
 # The Great Khan
 
-Independent open-source development of the KHAN experimental economic simulator.
+Open-source, mobile-first KHAN economic simulation. **Demo only:** no real funds, financial returns, or live blockchain.
 
-## Alpha 0.2 goals
-- Simulated KHAN wallets and transfers
-- Secondary tokens linked to KHAN
-- Transparent treasury contributions and community redistribution
-- Human-reviewed, community-governed decisions
-- Mobile-first Android browser experience
+## Economic model
+- **40% KHAN Commons:** infrastructure, resilience and security.
+- **30% People:** community programs and user benefits.
+- **30% Businesses:** support for businesses of all sizes.
 
-**Status:** repository bootstrap. Existing simulator source has not yet been migrated. No real blockchain or real-money transactions.
+Percentages apply to **net distributable protocol revenue**, never user balances or locked reserves. All amounts use integer minor units. Changes to governance and funding require transparent review.
 
-## Test plan
-1. Reject transfers above available balance and negative amounts.
-2. Verify fee conservation and treasury accounting.
-3. Restrict secondary token issuance to verified demo identities.
-4. Validate voting and redistribution totals.
-5. Verify refresh persistence and mobile accessibility.
+## Repository
+- `src/domain/revenue.ts` — deterministic three-pillar allocation engine.
+- `src/domain/revenue.test.ts` — 100,000 reproducibly randomized allocation scenarios and input validation.
+- `docs/ARCHITECTURE.md` — economic invariants and implementation plan.
+- `docs/HISTORICAL_GOVERNANCE.md` — historically inspired, rights-preserving governance.
+- `docs/TRI_PILLAR_ECONOMY.md` — three-pillar charter.
+- `.github/workflows/vitest.yml` — automated Vitest checks.
 
-Lovable is frozen; no Lovable edits are authorized.
+## Test locally
+```bash
+npm install
+npm test
+```
+
+## Development status
+Economic allocation engine implemented. Wallet transfers, token issuance, treasury operations, governance authorization, complete mobile UI and independent blockchain are **not yet implemented in this repository**. Test success for allocation does not imply a production-ready financial system.
+
+Development and testing are managed in GitHub.
