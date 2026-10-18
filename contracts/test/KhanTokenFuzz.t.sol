@@ -7,7 +7,7 @@ contract KhanTokenFuzzTest {
     address internal constant RECEIVER = address(0xBEEF);
 
     function setUp() public {
-        token = new KhanToken(address(this));
+        token = new KhanToken(address(this), address(this), address(this), address(0xCA57));
     }
 
     function testFuzzTransferPreservesSupply(uint256 amount) public {
@@ -27,7 +27,7 @@ contract KhanTokenFuzzTest {
 
     function testZeroInitialHolderReverts() public {
         bool reverted;
-        try new KhanToken(address(0)) { }
+        try new KhanToken(address(0), address(this), address(this), address(0xCA57)) { }
         catch { reverted = true; }
         require(reverted, "expected zero-holder revert");
     }
