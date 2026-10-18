@@ -1,27 +1,32 @@
-# KHAN governed token — proposed specification (not implemented)
+# KHAN governed token — Sepolia candidate, NOT AUDITED
 
-Status: DRAFT / Sepolia research only. This document supersedes the fixed-supply assumption for future design; it does NOT change the existing token contract or authorize deployment. Initial supply: 1,000,000,000 KHAN, decimals: 18. Maximum cap: **TBD, requires explicit owner confirmation before implementation**. The cap is immutable once deployed; totalSupply + amount <= cap on every mint, with overflow-safe Solidity 0.8 checks. Never mint if cap is unset.
+Owner-confirmed initial supply: **1,000,000,000 KHAN**.
+Owner-confirmed immutable lifetime maximum: **5,000,000,000 KHAN**.
+Decimals: 18. Up to 4 billion additional KHAN can be minted, but never beyond the cap.
 
-## Administrative functions and authorization
-- mint(to, amount): authorized MINTER role via multisig + timelock; positive amount; nonzero recipient; cap invariant; event. Define periodic rate limit before implementation.
-- freeze(account, caseId): FREEZER role; require reason reference, expiration/review deadline; block outbound and inbound transfers and transferFrom involving frozen accounts. Consider preventing approve/permit changes for frozen owners, while permitting allowance revocation. Exemptions must be explicit and narrowly defined.
-- unfreeze(account, caseId): separate REVIEWER or governance authorization; public event.
-- seize(from, amount, caseId): only after recorded authorization and timelock except narrowly specified emergency process; send solely to immutable custody/escrow contract, never an administrator EOA. Must reject zero amount, missing authorization, insufficient balance, duplicate case execution; publicly emit caseId and amount without PII. Define restitution/dispute process and legal basis.
-- pause/unpause: emergency transfer suspension by security council with limited duration and separate unpause authorization. Avoid bypass of cap or administrative accounting.
+## Implemented in branch
+- Immutable governance, guardian and custody addresses supplied at deployment.
+- Governance-only queued mint and seizure with an experimental **48-hour minimum onchain delay**. This delay is a provisional design parameter, not separately approved policy.
+- Mint cap enforced again at execution time; replay-protected case IDs shared across mint and seizure.
+- Guardian or governance can freeze accounts and pause transfers immediately. Only governance can unfreeze and unpause.
+- Frozen accounts cannot send or receive regular transfers or grant approvals. Seizure bypasses transfer freeze and pause but sends funds ONLY to designated custody address, preserving total supply.
+- Minted KHAN sent directly to recipient; no mint to frozen accounts. Seized KHAN are not burned.
+- Deployment script restricted to Anvil chain 31337 or Sepolia chain 11155111.
 
-## Governance
-- Proposed 3-of-5 multisig with independent signers, no single-key superuser.
-- Timelock for mint and seizure (duration TBD), explicit daily/epoch mint limits, role separation, revocation, emergency response.
-- Onchain event logs and public operational policy; case details kept offchain and privacy-preserving. Confiscation must be legally reviewed in relevant jurisdictions.
-- No proxy upgrades by default; if upgrades are proposed, disclose power and require separate explicit approval and independent review.
+## Critical limitations and unresolved decisions
+- **A governance address is not itself a 3-of-5 multisig.** A separately deployed and reviewed Safe/multisig must be used; a single-key governance address is unsafe.
+- Custody is only an address, NOT a dispute/restitution escrow contract yet. Its security and legal process remain unimplemented.
+- Mint rate limits, case expiration, freeze review deadlines, administrative role rotation/recovery, dispute handling, formal event-driven compliance workflow, emergency pause duration and timelock parameters remain to be designed.
+- Zero-first approve behavior may impact wallet/DEX compatibility; review against pinned OpenZeppelin contracts before production.
+- Current implementation uses custom ERC-20 logic; independent audit, invariant/fuzz coverage and integration tests are mandatory.
+- 48-hour delay does NOT by itself provide legal authorization for seizure.
+- The token is centrally administrable. Users must be clearly warned of mint, freeze, pause and seizure powers.
+- This is a **prototype**, not a final audited production contract. No onchain deployment or private key use has been authorized.
 
-## Mandatory tests and release gates
-- Fuzz/invariant: totalSupply <= cap, conservation of balances, mint limits, unauthorized roles cannot mint/freeze/seize, frozen accounts cannot bypass via transferFrom, admin events, zero address, boundary cap and overflow.
-- Multisig/timelock: threshold, delays, cancellation, replay resistance, signer rotation, compromised-key response.
-- Seizure: duplicate case, escrow isolation, insufficient balance, disputes, reversal/restitution; blocked wallet interactions.
-- Pause: emergency scope, duration and unpause; do not accidentally bypass sanctions/legal requirements.
-- Gas profiling, static analysis, CI, fork testing, external audit, verified source code, user disclosure and regulatory review.
-- Deployment Sepolia ONLY after owner confirms cap, timelock and custody design, green CI and fresh transaction approval. No mainnet.
-
-## Open decision
-Owner must select **maximum lifetime supply** in whole KHAN units (must be >= 1,000,000,000). This is distinct from a yearly mint budget. Do not silently choose a cap.
+## Release gates
+1. All Foundry tests green with recorded GitHub Actions run and logs.
+2. Review authorization, custody design, multisig policy and case controls.
+3. Add invariant/fuzz tests for cap, balances, frozen transferFrom, approval and seizure replay, queue cancellation and timelock.
+4. Static analysis, gas analysis, independent review, legal assessment and bytecode/source verification.
+5. Anvil simulation and Sepolia gas estimation; owner approval of exact deployment parameters.
+6. Sepolia-only transaction approval, then contract verification and published transaction hash. No mainnet.
