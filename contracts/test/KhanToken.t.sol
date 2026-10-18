@@ -8,7 +8,7 @@ contract KhanTokenTest {
     address internal constant BOB = address(0xB0B);
     function setUp() public { token = new KhanToken(address(this), 1000 ether); }
     function testMetadataAndSupply() public {
-        require(keccak256(bytes(token.symbol())) == keccak256("KHAN"));
+        require(keccak256(bytes(token.symbol())) == keccak256(bytes("KHAN")));
         require(token.totalSupply() == 1000 ether);
         require(token.balanceOf(address(this)) == 1000 ether);
     }
@@ -25,9 +25,21 @@ contract KhanTokenTest {
         require(token.balanceOf(BOB) == 30 ether);
     }
     function testRejectZeroRecipient() public {
-        try token.transfer(address(0), 1) { revert("expected revert"); } catch {}
+        try token.transfer(address(0), 1) { revert("unexpected success"); }
+        catch (bytes memory reason) {
+            require(bytes4(reason) == KhanToken.ZeroAddress.selector, "wrong revert");
+        }
     }
     function testRejectInsufficientBalance() public {
-        try token.transfer(ALICE, 1001 ether) { revert("expected revert"); } catch {}
+        try token.transfer(ALICE, 1001 ether) { revert("unexpected success"); }
+        catch (bytes memory reason) {
+            require(bytes4(reason) == KhanToken.InsufficientBalance.selector, "wrong revert");
+        }
+    }
+    function testRejectInsufficientAllowance() public {
+        try token.transferFrom(ALICE, BOB, 1) { revert("unexpected success"); }
+        catch (bytes memory reason) {
+            require(bytes4(reason) == KhanToken.InsufficientAllowance.selector, "wrong revert");
+        }
     }
 }
