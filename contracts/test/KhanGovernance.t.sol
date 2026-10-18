@@ -49,6 +49,7 @@ contract KhanGovernanceTest {
         bool reverted;
         try token.transfer(ALICE, 1) {} catch { reverted = true; }
         require(reverted, "frozen inbound");
+        reverted = false;
         vm.prank(ALICE);
         try token.transfer(address(this), 1) {} catch { reverted = true; }
         require(reverted, "frozen outbound");
