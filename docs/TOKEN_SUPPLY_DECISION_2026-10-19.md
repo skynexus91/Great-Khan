@@ -7,7 +7,7 @@
 - **Name and symbol remain The Great Khan (KHAN).** The owner clarified that the earlier “CATHY” interpretation was incorrect; no rename requested.
 
 ## Pending user inputs before public Sepolia deployment
-1. Supply an EVM address (`0x` plus 40 hexadecimal characters) to receive test tokens. **Never share a private key or seed phrase.**
+1. **Public test-token recipient provided:** `0x480F2b9E76098882d4245d36788db656a6cB585a` (42-character EVM address; syntactic validation only, not ownership or checksum verification). Never share a private key or seed phrase.
 2. Confirm the specific Sepolia deployment transaction after tests pass; use faucet ETH only.
 
 ## Release gates
