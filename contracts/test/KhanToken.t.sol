@@ -29,21 +29,30 @@ contract KhanTokenTest {
         assembly { result := mload(add(reason, 32)) }
     }
     function testRejectZeroRecipient() public {
-        try token.transfer(address(0), 1) { revert("unexpected success"); }
+        bool reverted;
+        try token.transfer(address(0), 1) { }
         catch (bytes memory reason) {
             require(_selector(reason) == KhanToken.ZeroAddress.selector, "wrong revert");
+            reverted = true;
         }
+        require(reverted, "unexpected success");
     }
     function testRejectInsufficientBalance() public {
-        try token.transfer(ALICE, 1001 ether) { revert("unexpected success"); }
+        bool reverted;
+        try token.transfer(ALICE, 1001 ether) { }
         catch (bytes memory reason) {
             require(_selector(reason) == KhanToken.InsufficientBalance.selector, "wrong revert");
+            reverted = true;
         }
+        require(reverted, "unexpected success");
     }
     function testRejectInsufficientAllowance() public {
-        try token.transferFrom(ALICE, BOB, 1) { revert("unexpected success"); }
+        bool reverted;
+        try token.transferFrom(ALICE, BOB, 1) { }
         catch (bytes memory reason) {
             require(_selector(reason) == KhanToken.InsufficientAllowance.selector, "wrong revert");
+            reverted = true;
         }
+        require(reverted, "unexpected success");
     }
 }
